@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glass Classification API</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#667eea',
+                        secondary: '#764ba2',
+                        accent: '#f093fb',
+                        success: '#43e97b',
+                        warning: '#fa709a',
+                        info: '#4facfe',
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.6s ease forwards',
+                        'slide-up': 'slideUp 0.6s ease forwards',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { opacity: '0', transform: 'translateY(30px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                    },
+                },
+            },
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        .bg-gradient-animated {
+            background: linear-gradient(-45deg, #667eea, #764ba2, #f093fb, #4facfe);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+        }
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .input-focus-ring:focus {
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
+        }
+        .btn-hover-lift:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+        .btn-hover-lift:active {
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="bg-gradient-animated min-h-screen">
+
+    <!-- Animated Background Shapes -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
+        <div class="absolute -top-20 -left-20 w-72 h-72 bg-white/10 rounded-full blur-3xl animate-float"></div>
+        <div class="absolute top-1/2 -right-20 w-96 h-96 bg-white/5 rounded-full blur-3xl animate-float" style="animation-delay: 2s;"></div>
+        <div class="absolute -bottom-20 left-1/3 w-80 h-80 bg-white/10 rounded-full blur-3xl animate-float" style="animation-delay: 4s;"></div>
+    </div>
+
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- Header -->
+        <header class="glass-card rounded-3xl p-8 md:p-12 mb-8 shadow-2xl animate-slide-up">
+            <div class="text-center">
+                <div class="inline-flex items-center gap-2 bg-gradient-to-r from-primary to-secondary text-white px-4 py-2 rounded-full text-sm font-semibold mb-6 shadow-lg">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                    </svg>
+                    AI-Powered Classification
+                </div>
+                
+                <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary to-secondary rounded-2xl mb-6 shadow-xl animate-pulse-slow">
+                    <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/>
+                    </svg>
+                </div>
+
+                <h1 class="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent mb-4">
+                    Glass Classification
+                </h1>
+                <p class="text-lg text-gray-600 mb-6 max-w-2xl mx-auto">
+                    Identifikasi Jenis Kaca Berdasarkan Komposisi Kimia Menggunakan Machine Learning
+                </p>
+
+                <div class="flex flex-wrap justify-center gap-3">
+                    <span class="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"/>
+                        </svg>
+                        K-Means Clustering
+                    </span>
+                    <span class="inline-flex items-center gap-2 bg-secondary/10 text-secondary px-4 py-2 rounded-full text-sm font-medium">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                        Decision Tree
+                    </span>
+                    <span class="inline-flex items-center gap-2 bg-accent/10 text-accent px-4 py-2 rounded-full text-sm font-medium">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/>
+                        </svg>
+                        9 Chemical Features
+                    </span>
+                </div>
+            </div>
+        </header>
+
+        <div class="space-y-8">
+
+            <!-- Form Input Card -->
+            <div class="glass-card rounded-3xl p-6 md:p-10 shadow-2xl animate-slide-up" style="animation-delay: 0.1s;">
+                <div class="flex items-center gap-4 mb-8 pb-6 border-b border-gray-200">
+                    <div class="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center shadow-lg">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-800">Input Komposisi Kimia</h2>
+                        <p class="text-gray-500 text-sm">Masukkan nilai komposisi kimia kaca untuk prediksi</p>
+                    </div>
+                </div>
+
+                <form id="predictionForm" class="space-y-8">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+                        <!-- RI -->
+                        <div class="group">
+                            <label for="RI" class="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
+                                <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707"/>
+                                </svg>
+                                Refractive Index (RI)
+                            </label>
+                            <input type="number" step="0.001" id="RI" name="RI" placeholder="1.520" required
+                                class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-base font-mono transition-all duration-300 input-focus-ring focus:border-primary focus:outline-none hover:border-gray-300">
+                            <p class="text-xs text-gray-400 mt-1">Range: 1.51 - 1.53</p>
+                        </div>
+
+                        <!-- Na -->
+                        <div class="group">
+                            <label for="Na" class="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
+                                <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/>
+                                </svg>
+                                Sodium (Na)
+                            </label>
+                            <input type="number" step="0.01" id="Na" name="Na" placeholder="13.40" required
+                                class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-base font-mono transition-all duration-300 input-focus-ring focus:border-primary focus:outline-none hover:border-gray-300">
+                            <p class="text-xs text-gray-400 mt-1">Range: 10 - 18%</p>
+                        </div>
+
+                        <!-- Mg -->
+                        <div class="group">
+                            <label for="Mg" class="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
+                                <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                                </svg>
+                                Magnesium (Mg)
+                            </label>
+                            <input type="number" step="0.01" id="Mg" name="Mg" placeholder="2.68" required
+                                class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-base font-mono transition-all duration-300 input-focus-ring focus:border-primary focus:outline-none hover:border-gray-300">
+                            <p class="text-xs text-gray-400 mt-1">Range: 0 - 5%</p>
+                        </div>
+
+                        <!-- Al -->
+                        <div class="group">
+                            <label for="Al" class="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
+                                <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                                </svg>
+                                Aluminum (Al)
+                            </label>
+                            <input type="number" step="0.01" id="Al" name="Al" placeholder="1.44" required
+                                class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-base font-mono transition-all duration-300 input-focus-ring focus:border-primary focus:outline-none hover:border-gray-300">
+                            <p class="text-xs text-gray-400 mt-1">Range: 0 - 4%</p>
+                        </div>
+
+                        <!-- Si -->
+                        <div class="group">
+                            <label for="Si" class="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
+                                <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
+                                </svg>
+                                Silicon (Si)
+                            </label>
+                            <input type="number" step="0.01" id="Si" name="Si" placeholder="72.65" required
+                                class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-base font-mono transition-all duration-300 input-focus-ring focus:border-primary focus:outline-none hover:border-gray-300">
+                            <p class="text-xs text-gray-400 mt-1">Range: 69 - 76%</p>
+                        </div>
+
+                        <!-- K -->
+                        <div class="group">
+                            <label for="K" class="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
+                                <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                                </svg>
+                                Potassium (K)
+                            </label>
+                            <input type="number" step="0.01" id="K" name="K" placeholder="0.50" required
+                                class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-base font-mono transition-all duration-300 input-focus-ring focus:border-primary focus:outline-none hover:border-gray-300">
+                            <p class="text-xs text-gray-400 mt-1">Range: 0 - 7%</p>
+                        </div>
+
+                        <!-- Ca -->
+                        <div class="group">
+                            <label for="Ca" class="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
+                                <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                                </svg>
+                                Calcium (Ca)
+                            </label>
+                            <input type="number" step="0.01" id="Ca" name="Ca" placeholder="8.96" required
+                                class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-base font-mono transition-all duration-300 input-focus-ring focus:border-primary focus:outline-none hover:border-gray-300">
+                            <p class="text-xs text-gray-400 mt-1">Range: 5 - 17%</p>
+                        </div>
+
+                        <!-- Ba -->
+                        <div class="group">
+                            <label for="Ba" class="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
+                                <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                                </svg>
+                                Barium (Ba)
+                            </label>
+                            <input type="number" step="0.01" id="Ba" name="Ba" placeholder="0.18" required
+                                class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-base font-mono transition-all duration-300 input-focus-ring focus:border-primary focus:outline-none hover:border-gray-300">
+                            <p class="text-xs text-gray-400 mt-1">Range: 0 - 4%</p>
+                        </div>
+
+                        <!-- Fe -->
+                        <div class="group">
+                            <label for="Fe" class="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
+                                <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/>
+                                </svg>
+                                Iron (Fe)
+                            </label>
+                            <input type="number" step="0.01" id="Fe" name="Fe" placeholder="0.06" required
+                                class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-base font-mono transition-all duration-300 input-focus-ring focus:border-primary focus:outline-none hover:border-gray-300">
+                            <p class="text-xs text-gray-400 mt-1">Range: 0 - 1%</p>
+                        </div>
+
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="flex flex-wrap gap-4 pt-4">
+                        <button type="submit" id="predictBtn"
+                            class="btn-hover-lift inline-flex items-center gap-2 bg-gradient-to-r from-primary to-secondary text-white px-8 py-3.5 rounded-xl font-semibold shadow-lg transition-all duration-300 hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-primary/30">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                            </svg>
+                            <span class="btn-text">Prediksi Jenis Kaca</span>
+                            <span class="btn-loader hidden">
+                                <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                Memproses...
+                            </span>
+                        </button>
+
+                        <button type="button" onclick="loadExample()"
+                            class="btn-hover-lift inline-flex items-center gap-2 bg-gray-100 text-gray-700 px-6 py-3.5 rounded-xl font-semibold transition-all duration-300 hover:bg-gray-200 hover:shadow-md focus:outline-none focus:ring-4 focus:ring-gray-200">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+                            </svg>
+                            Load Contoh
+                        </button>
+
+                        <button type="reset"
+                            class="btn-hover-lift inline-flex items-center gap-2 bg-white text-primary border-2 border-primary px-6 py-3.5 rounded-xl font-semibold transition-all duration-300 hover:bg-primary hover:text-white hover:shadow-md focus:outline-none focus:ring-4 focus:ring-primary/30">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                            </svg>
+                            Reset
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Hasil Prediksi Card -->
+            <div id="resultCard" class="glass-card rounded-3xl p-6 md:p-10 shadow-2xl animate-slide-up hidden" style="animation-delay: 0.2s;">
+                <div class="flex items-center gap-4 mb-8 pb-6 border-b border-gray-200">
+                    <div class="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-success to-green-400 rounded-xl flex items-center justify-center shadow-lg">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-800">Hasil Prediksi</h2>
+                        <p class="text-gray-500 text-sm">Analisis jenis kaca berdasarkan komposisi kimia</p>
+                    </div>
+                </div>
+
+                <div class="space-y-6">
+                    <!-- K-Means Result -->
+                    <div class="bg-gradient-to-r from-primary/5 to-secondary/5 rounded-2xl p-6 border-l-4 border-primary">
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="inline-flex items-center gap-1.5 bg-primary text-white px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wide">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"/>
+                                </svg>
+                                K-Means Clustering
+                            </span>
+                        </div>
+                        <div class="flex flex-col sm:flex-row sm:items-center gap-4">
+                            <div class="flex-shrink-0 w-16 h-16 bg-white rounded-xl flex items-center justify-center shadow-md text-3xl">
+                                🏢
+                            </div>
+                            <div class="flex-1">
+                                <div class="inline-block bg-primary text-white px-3 py-1 rounded-lg text-sm font-bold mb-2" id="kmeansClusterBadge">
+                                    Cluster 0
+                                </div>
+                                <h3 class="text-xl font-bold text-gray-800" id="kmeansTitle">Building Windows Glass</h3>
+                                <p class="text-gray-500" id="kmeansSubtitle">Kaca Jendela Bangunan</p>
+                            </div>
+                        </div>
+                        <p class="mt-4 text-gray-600 bg-white/50 p-4 rounded-xl" id="kmeansDescription">
+                            Kaca dengan kadar Magnesium (Mg) dan Kalsium (Ca) tinggi, khas untuk kaca jendela bangunan.
+                        </p>
+                    </div>
+
+                    <!-- Decision Tree Result -->
+                    <div class="bg-gradient-to-r from-secondary/5 to-accent/5 rounded-2xl p-6 border-l-4 border-secondary">
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="inline-flex items-center gap-1.5 bg-secondary text-white px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wide">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                </svg>
+                                Decision Tree
+                            </span>
+                        </div>
+                        <div class="flex flex-col sm:flex-row sm:items-center gap-4">
+                            <div class="flex-shrink-0 w-16 h-16 bg-white rounded-xl flex items-center justify-center shadow-md text-3xl">
+                                🏢
+                            </div>
+                            <div class="flex-1">
+                                <div class="inline-block bg-secondary text-white px-3 py-1 rounded-lg text-sm font-bold mb-2" id="dtClusterBadge">
+                                    Cluster 0
+                                </div>
+                                <h3 class="text-xl font-bold text-gray-800" id="dtTitle">Building Windows Glass</h3>
+                                <p class="text-gray-500" id="dtSubtitle">Kaca Jendela Bangunan</p>
+                            </div>
+                        </div>
+                        <p class="mt-4 text-gray-600 bg-white/50 p-4 rounded-xl" id="dtDescription">
+                            Kaca dengan kadar Magnesium (Mg) dan Kalsium (Ca) tinggi, khas untuk kaca jendela bangunan.
+                        </p>
+                    </div>
+
+                    <!-- Input Summary -->
+                    <div class="bg-gray-50 rounded-2xl p-6">
+                        <h3 class="flex items-center gap-2 text-lg font-bold text-gray-800 mb-4">
+                            <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                            </svg>
+                            Data Input Komposisi Kimia
+                        </h3>
+                        <div id="inputSummary" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+                            <!-- Summary items will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- API Info Card -->
+            <div class="glass-card rounded-3xl p-6 md:p-10 shadow-2xl animate-slide-up" style="animation-delay: 0.3s;">
+                <div class="flex items-center gap-4 mb-8 pb-6 border-b border-gray-200">
+                    <div class="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-accent to-warning rounded-xl flex items-center justify-center shadow-lg">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-800">API Documentation</h2>
+                        <p class="text-gray-500 text-sm">Endpoint yang tersedia untuk integrasi</p>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <!-- GET / -->
+                    <div class="flex flex-col sm:flex-row sm:items-center gap-3 bg-gray-50 rounded-xl p-4 hover:shadow-md transition-all duration-300 hover:-translate-y-0.5">
+                        <span class="inline-flex items-center bg-green-500 text-white px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wide w-fit">
+                            GET
+                        </span>
+                        <code class="bg-gray-200 px-3 py-1.5 rounded-lg text-primary font-mono text-sm font-semibold">/</code>
+                        <span class="text-gray-600 text-sm sm:ml-auto">Halaman utama</span>
+                    </div>
+
+                    <!-- POST /predict -->
+                    <div class="flex flex-col sm:flex-row sm:items-center gap-3 bg-gray-50 rounded-xl p-4 hover:shadow-md transition-all duration-300 hover:-translate-y-0.5">
+                        <span class="inline-flex items-center bg-blue-500 text-white px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wide w-fit">
+                            POST
+                        </span>
+                        <code class="bg-gray-200 px-3 py-1.5 rounded-lg text-primary font-mono text-sm font-semibold">/predict</code>
+                        <span class="text-gray-600 text-sm sm:ml-auto">Prediksi dengan JSON</span>
+                    </div>
+
+                    <!-- POST /predict/form -->
+                    <div class="flex flex-col sm:flex-row sm:items-center gap-3 bg-gray-50 rounded-xl p-4 hover:shadow-md transition-all duration-300 hover:-translate-y-0.5">
+                        <span class="inline-flex items-center bg-blue-500 text-white px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wide w-fit">
+                            POST
+                        </span>
+                        <code class="bg-gray-200 px-3 py-1.5 rounded-lg text-primary font-mono text-sm font-semibold">/predict/form</code>
+                        <span class="text-gray-600 text-sm sm:ml-auto">Prediksi dengan form</span>
+                    </div>
+
+                    <!-- GET /api/info -->
+                    <div class="flex flex-col sm:flex-row sm:items-center gap-3 bg-gray-50 rounded-xl p-4 hover:shadow-md transition-all duration-300 hover:-translate-y-0.5">
+                        <span class="inline-flex items-center bg-green-500 text-white px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wide w-fit">
+                            GET
+                        </span>
+                        <code class="bg-gray-200 px-3 py-1.5 rounded-lg text-primary font-mono text-sm font-semibold">/api/info</code>
+                        <span class="text-gray-600 text-sm sm:ml-auto">Informasi API</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-12 text-center">
+            <div class="glass-card rounded-2xl p-6 shadow-lg inline-block">
+                <p class="text-white font-semibold flex items-center justify-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/>
+                    </svg>
+                    Glass Classification API
+                </p>
+                <p class="text-white/80 text-sm mt-1">Built with Flask, Scikit-Learn, K-Means & Decision Tree</p>
+                <p class="text-white/60 text-xs mt-2">© 2024 | UAS PSSD</p>
+            </div>
+        </footer>
+
+    </div>
+
+    <script>
+        // Form submission
+        document.getElementById('predictionForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const btn = document.getElementById('predictBtn');
+            const btnText = btn.querySelector('.btn-text');
+            const btnLoader = btn.querySelector('.btn-loader');
+            
+            // Show loading
+            btnText.classList.add('hidden');
+            btnLoader.classList.remove('hidden');
+            btn.disabled = true;
+            
+            // Collect form data
+            const formData = new FormData(this);
+            const data = {};
+            formData.forEach((value, key) => {
+                data[key] = parseFloat(value);
+            });
+            
+            try {
+                const response = await fetch('/predict/form', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    displayResult(result.prediction, result.input_data);
+                } else {
+                    alert('Error: ' + result.error);
+                }
+            } catch (error) {
+                alert('Terjadi kesalahan: ' + error.message);
+            } finally {
+                // Hide loading
+                btnText.classList.remove('hidden');
+                btnLoader.classList.add('hidden');
+                btn.disabled = false;
+            }
+        });
+        
+        function displayResult(prediction, inputData) {
+            // Show result card
+            const resultCard = document.getElementById('resultCard');
+            resultCard.classList.remove('hidden');
+            resultCard.classList.add('animate-slide-up');
+            
+            // K-Means Result
+            document.getElementById('kmeansClusterBadge').textContent = `Cluster ${prediction.kmeans_cluster}`;
+            document.getElementById('kmeansTitle').textContent = prediction.kmeans_glass_type || 'Building Windows Glass';
+            document.getElementById('kmeansSubtitle').textContent = prediction.kmeans_glass_type_id || 'Kaca Jendela Bangunan';
+            document.getElementById('kmeansDescription').textContent = prediction.kmeans_description || 'Kaca dengan karakteristik khusus.';
+            
+            // Decision Tree Result
+            document.getElementById('dtClusterBadge').textContent = `Cluster ${prediction.decision_tree_cluster}`;
+            document.getElementById('dtTitle').textContent = prediction.decision_tree_glass_type || 'Building Windows Glass';
+            document.getElementById('dtSubtitle').textContent = prediction.decision_tree_glass_type_id || 'Kaca Jendela Bangunan';
+            document.getElementById('dtDescription').textContent = prediction.decision_tree_description || 'Kaca dengan karakteristik khusus.';
+            
+            // Input Summary
+            const summaryHtml = Object.entries(inputData).map(([key, value]) => `
+                <div class="bg-white rounded-lg px-3 py-2 shadow-sm border border-gray-100">
+                    <span class="text-xs text-gray-500 font-medium">${key}:</span>
+                    <span class="text-sm text-primary font-bold font-mono">${value}</span>
+                </div>
+            `).join('');
+            
+            document.getElementById('inputSummary').innerHTML = summaryHtml;
+            
+            // Scroll to result
+            setTimeout(() => {
+                resultCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
+        }
+        
+        function loadExample() {
+            const exampleData = {
+                'RI': 1.521,
+                'Na': 13.64,
+                'Mg': 4.49,
+                'Al': 1.10,
+                'Si': 72.70,
+                'K': 0.06,
+                'Ca': 8.90,
+                'Ba': 0.00,
+                'Fe': 0.00
+            };
+            
+            Object.entries(exampleData).forEach(([key, value]) => {
+                const input = document.getElementById(key);
+                input.value = value;
+                input.classList.add('ring-2', 'ring-primary', 'ring-opacity-50');
+                setTimeout(() => {
+                    input.classList.remove('ring-2', 'ring-primary', 'ring-opacity-50');
+                }, 1000);
+            });
+        }
+    </script>
+</body>
+</html>
